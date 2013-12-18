@@ -60,7 +60,7 @@ int main(int argc, char** argv){
    /*               error_norm norm, */
    /*               double *val, double *err); */
 
-   hcubature(2, fwrap, &sigma, 3, xmin, xmax, 0, 0, 1e-4, ERROR_INDIVIDUAL, data_pointer, err);
+   hcubature(fdim, fwrap, &sigma, 3, xmin, xmax, 0, 0, 1e-4, ERROR_INDIVIDUAL, data_pointer, err);
 
    result.print("result:");
    
