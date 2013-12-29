@@ -1,5 +1,5 @@
 /* compiled with the following */
-/* g++ -DHCUBATURE -o minimal hcubature.c minimal.c -lm -I /usr/local/include -O2  -larmadillo -framework Accelerate */
+/* g++ -DHCUBATURE -o pointer hcubature.c pointer.c -lm -I /usr/local/include -O2  -larmadillo -framework Accelerate */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +12,7 @@
 using namespace std;
 using namespace arma;
 
-/* integrand using Armadillo data structures */
+/* vector-valued integrand using Armadillo data structures */
 colvec fa(const int ndim, const double sigma, double x)
 {
   colvec results(ndim);
@@ -32,9 +32,11 @@ int fwrap(unsigned ndim, const double *x, void *fdata, unsigned fdim, double *fv
     colvec res = fa(ndim, sigma, *x);
 
     /* fail to access the results directly */
-    // fval = res.memptr();
-    int ii;
-    for (ii=0; ii<ndim; ii++) fval[ii] = res[ii];
+    /* fval = &res[0]; */  
+    //typedef std::vector<double> stdvec;
+    // *fval = &conv_to< stdvec >::from(res);
+     int ii; 
+     for (ii=0; ii<ndim; ii++) fval[ii] = res[ii]; 
 
     return 0;
 }
