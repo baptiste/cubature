@@ -24,22 +24,30 @@ colvec fa(const int ndim, const double sigma, double x)
   return results;
 }
 
+  struct params {
+    double sigma;
+    string comment;
+  } ;
+
 
 /* wrapper of integrand for integration */
 int fwrap(unsigned ndim, const double *x, void *fdata, unsigned fdim, double *fval) {
-    double sigma = *((double *) fdata);
+  params mydata = *((params *) fdata);
+  double sigma = mydata.sigma;
+  string comment = mydata.comment;
+  cout << comment << endl;
 
-    colvec res(fval, fdim, false);
-    res = fa(ndim, sigma, *x);
+  colvec res(fval, fdim, false);
+  res = fa(ndim, sigma, *x);
+  
+  /* fail to access the results directly */
+  // fval = res.memptr();
+  
+  // colvec res = fa(ndim, sigma, *x);
+  //  int ii;
+  // for (ii=0; ii<ndim; ii++) fval[ii] = res[ii];
 
-    /* fail to access the results directly */
-    // fval = res.memptr();
-
-    // colvec res = fa(ndim, sigma, *x);
-    //  int ii;
-    // for (ii=0; ii<ndim; ii++) fval[ii] = res[ii];
-
-    return 0;
+  return 0;
 }
 
 int main(int argc, char** argv){
@@ -55,13 +63,17 @@ int main(int argc, char** argv){
   
   double xmin[3] = {-2,-2,-2}, xmax[3] = {2,2,2}, sigma = 0.5;
 
+  params mydata;
+  mydata.sigma = sigma;
+  mydata.comment = "hey";
+
    /* int hcubature(unsigned fdim, integrand f, void *fdata, */
    /*               unsigned dim, const double *xmin, const double *xmax,  */
    /*               size_t maxEval, double reqAbsError, double reqRelError,  */
    /*               error_norm norm, */
    /*               double *val, double *err); */
 
-   hcubature(fdim, fwrap, &sigma, ndim, xmin, xmax, 0, 0, 1e-4, ERROR_INDIVIDUAL, integral_pt, error_pt);
+   hcubature(fdim, fwrap, &mydata, ndim, xmin, xmax, 0, 0, 1e-4, ERROR_INDIVIDUAL, integral_pt, error_pt);
 
   // initialise an Armadillo matrix to use external memory
   mat  result(integral_pt, 1, fdim, false);
