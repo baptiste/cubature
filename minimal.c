@@ -29,7 +29,7 @@ colvec fa(const int ndim, const double sigma, double x)
 int fwrap(unsigned ndim, const double *x, void *fdata, unsigned fdim, double *fval) {
     double sigma = *((double *) fdata);
 
-    colvec res(fval, ndim, false);
+    colvec res(fval, fdim, false);
     res = fa(ndim, sigma, *x);
 
     /* fail to access the results directly */
@@ -46,6 +46,7 @@ int main(int argc, char** argv){
 
   const int ndim = 3;
   const int fdim = 3;
+
   // initialise the vectors to store integration results
   std::vector<double> integral(fdim);
   std::vector<double> error(fdim);
@@ -63,7 +64,7 @@ int main(int argc, char** argv){
    hcubature(fdim, fwrap, &sigma, ndim, xmin, xmax, 0, 0, 1e-4, ERROR_INDIVIDUAL, integral_pt, error_pt);
 
   // initialise an Armadillo matrix to use external memory
-  Mat<double>  result(integral_pt, 1, fdim, false);
+  mat  result(integral_pt, 1, fdim, false);
   // do things with the matrix...
   result.print("result:");
   
